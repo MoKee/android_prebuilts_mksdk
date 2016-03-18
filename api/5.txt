@@ -67,29 +67,6 @@ package mokee.alarmclock {
 
 package mokee.app {
 
-  public class MKStatusBarManager {
-    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
-    method public void publishTile(int, mokee.app.CustomTile);
-    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
-    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
-    method public void removeTile(int);
-    method public void removeTile(java.lang.String, int);
-    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
-  }
-
-  public class MKTelephonyManager {
-    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
-    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
-    method public boolean isDataConnectionEnabled();
-    method public boolean isDataConnectionSelectedOnSub(int);
-    method public boolean isSubActive(int);
-    method public void setDataConnectionState(boolean);
-    method public void setDefaultPhoneSub(int);
-    method public void setDefaultSmsSub(int);
-    method public void setSubState(int, boolean);
-    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
-  }
-
   public class CustomTile implements android.os.Parcelable {
     ctor public CustomTile(android.os.Parcel);
     ctor public CustomTile();
@@ -197,6 +174,29 @@ package mokee.app {
     field public static final java.lang.String SERVICE_INTERFACE = "mokee.app.CustomTileListenerService";
   }
 
+  public class MKStatusBarManager {
+    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
+    method public void publishTile(int, mokee.app.CustomTile);
+    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
+    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
+    method public void removeTile(int);
+    method public void removeTile(java.lang.String, int);
+    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
+  }
+
+  public class MKTelephonyManager {
+    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
+    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
+    method public boolean isDataConnectionEnabled();
+    method public boolean isDataConnectionSelectedOnSub(int);
+    method public boolean isSubActive(int);
+    method public void setDataConnectionState(boolean);
+    method public void setDefaultPhoneSub(int);
+    method public void setDefaultSmsSub(int);
+    method public void setSubState(int, boolean);
+    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
+  }
+
   public class PartnerInterface {
     method public java.lang.String getCurrentHotwordPackageName();
     method public static mokee.app.PartnerInterface getInstance(android.content.Context);
@@ -220,6 +220,7 @@ package mokee.app {
     method public int describeContents();
     method public mokee.profiles.AirplaneModeSettings getAirplaneMode();
     method public mokee.profiles.BrightnessSettings getBrightness();
+    method public mokee.profiles.ConnectionSettings getConnectionSettingWithSubId(int);
     method public java.util.Collection<mokee.profiles.ConnectionSettings> getConnectionSettings();
     method public int getDozeMode();
     method public int getExpandedDesktopMode();
@@ -329,7 +330,7 @@ package mokee.app {
     method public void updateProfile(mokee.app.Profile);
     field public static final java.lang.String ACTION_PROFILE_PICKER = "mokee.platform.intent.action.PROFILE_PICKER";
     field public static final java.lang.String EXTRA_LAST_PROFILE_NAME = "lastName";
-    field public static final java.lang.String EXTRA_LAST_PROFILE_UUID = "uuid";
+    field public static final java.lang.String EXTRA_LAST_PROFILE_UUID = "lastUuid";
     field public static final java.lang.String EXTRA_PROFILES_STATE = "profile_state";
     field public static final java.lang.String EXTRA_PROFILE_DIALOG_THEME = "mokee.platform.intent.extra.profile.DIALOG_THEME";
     field public static final java.lang.String EXTRA_PROFILE_EXISTING_UUID = "mokee.platform.extra.profile.EXISTING_UUID";
@@ -372,8 +373,13 @@ package mokee.content {
     ctor public Intent();
     field public static final java.lang.String ACTION_PROTECTED = "mokee.intent.action.PACKAGE_PROTECTED";
     field public static final java.lang.String ACTION_PROTECTED_CHANGED = "mokee.intent.action.PROTECTED_COMPONENT_UPDATE";
+    field public static final java.lang.String ACTION_THEME_INSTALLED = "mokee.intent.action.THEME_INSTALLED";
+    field public static final java.lang.String ACTION_THEME_REMOVED = "mokee.intent.action.THEME_REMOVED";
+    field public static final java.lang.String ACTION_THEME_UPDATED = "mokee.intent.action.THEME_UPDATED";
+    field public static final java.lang.String CATEGORY_THEME_PACKAGE_INSTALLED_STATE_CHANGE = "mokee.intent.category.THEME_PACKAGE_INSTALL_STATE_CHANGE";
     field public static final java.lang.String EXTRA_PROTECTED_COMPONENTS = "mokee.intent.extra.PACKAGE_PROTECTED_COMPONENTS";
     field public static final java.lang.String EXTRA_PROTECTED_STATE = "mokee.intent.extra.PACKAGE_PROTECTED_STATE";
+    field public static final java.lang.String URI_SCHEME_PACKAGE = "package";
   }
 
 }
@@ -408,6 +414,25 @@ package mokee.externalviews {
 }
 
 package mokee.hardware {
+
+  public class DisplayMode implements android.os.Parcelable {
+    ctor public DisplayMode(int, java.lang.String);
+    method public int describeContents();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public final int id;
+    field public final java.lang.String name;
+  }
+
+  public abstract interface IThermalListenerCallback implements android.os.IInterface {
+    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
+  }
+
+  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
+    ctor public IThermalListenerCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
 
   public final class MKHardwareManager {
     method public boolean deletePersistentObject(java.lang.String);
@@ -469,25 +494,6 @@ package mokee.hardware {
     field public static final int FEATURE_TOUCH_HOVERING = 2048; // 0x800
     field public static final int FEATURE_UNIQUE_DEVICE_ID = 65536; // 0x10000
     field public static final int FEATURE_VIBRATOR = 1024; // 0x400
-  }
-
-  public class DisplayMode implements android.os.Parcelable {
-    ctor public DisplayMode(int, java.lang.String);
-    method public int describeContents();
-    method public void writeToParcel(android.os.Parcel, int);
-    field public final int id;
-    field public final java.lang.String name;
-  }
-
-  public abstract interface IThermalListenerCallback implements android.os.IInterface {
-    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
-  }
-
-  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
-    ctor public IThermalListenerCallback.Stub();
-    method public android.os.IBinder asBinder();
-    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
-    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
   }
 
   public abstract class ThermalListenerCallback extends mokee.hardware.IThermalListenerCallback.Stub {
@@ -554,8 +560,7 @@ package mokee.platform {
 
   public static final class Manifest.permission {
     ctor public Manifest.permission();
-    field public static final java.lang.String READ_PHONE_LOCATION = "mokee.permission.READ_PHONE_LOCATION";
-    field public static final java.lang.String WRITE_PHONE_LOCATION = "mokee.permission.WRITE_PHONE_LOCATION";
+    field public static final java.lang.String ACCESS_THEME_MANAGER = "mokee.permission.ACCESS_THEME_MANAGER";
     field public static final java.lang.String HARDWARE_ABSTRACTION_ACCESS = "mokee.permission.HARDWARE_ABSTRACTION_ACCESS";
     field public static final java.lang.String MANAGE_ALARMS = "mokee.permission.MANAGE_ALARMS";
     field public static final java.lang.String MANAGE_PERSISTENT_STORAGE = "mokee.permission.MANAGE_PERSISTENT_STORAGE";
@@ -563,14 +568,19 @@ package mokee.platform {
     field public static final java.lang.String MODIFY_NETWORK_SETTINGS = "mokee.permission.MODIFY_NETWORK_SETTINGS";
     field public static final java.lang.String MODIFY_PROFILES = "mokee.permission.MODIFY_PROFILES";
     field public static final java.lang.String MODIFY_SOUND_SETTINGS = "mokee.permission.MODIFY_SOUND_SETTINGS";
+    field public static final java.lang.String PERFORMANCE_ACCESS = "mokee.permission.PERFORMANCE_ACCESS";
     field public static final java.lang.String PROTECTED_APP = "mokee.permission.PROTECTED_APP";
     field public static final java.lang.String PUBLISH_CUSTOM_TILE = "mokee.permission.PUBLISH_CUSTOM_TILE";
     field public static final java.lang.String READ_ALARMS = "mokee.permission.READ_ALARMS";
     field public static final java.lang.String READ_MSIM_PHONE_STATE = "mokee.permission.READ_MSIM_PHONE_STATE";
+    field public static final java.lang.String READ_PHONE_LOCATION = "mokee.permission.READ_PHONE_LOCATION";
+    field public static final java.lang.String READ_THEMES = "mokee.permission.READ_THEMES";
     field public static final java.lang.String THIRD_PARTY_KEYGUARD = "android.permission.THIRD_PARTY_KEYGUARD";
     field public static final java.lang.String WRITE_ALARMS = "mokee.permission.WRITE_ALARMS";
+    field public static final java.lang.String WRITE_PHONE_LOCATION = "mokee.permission.WRITE_PHONE_LOCATION";
     field public static final java.lang.String WRITE_SECURE_SETTINGS = "mokee.permission.WRITE_SECURE_SETTINGS";
     field public static final java.lang.String WRITE_SETTINGS = "mokee.permission.WRITE_SETTINGS";
+    field public static final java.lang.String WRITE_THEMES = "mokee.permission.WRITE_THEMES";
   }
 
   public final class R {
@@ -664,9 +674,11 @@ package mokee.profiles {
     ctor public ConnectionSettings(int, int, boolean);
     method public int describeContents();
     method public int getConnectionId();
+    method public int getSubId();
     method public int getValue();
     method public boolean isOverride();
     method public void setOverride(boolean);
+    method public void setSubId(int);
     method public void setValue(int);
     method public void writeToParcel(android.os.Parcel, int);
     field public static final int PROFILE_CONNECTION_2G3G4G = 9; // 0x9
@@ -733,10 +745,6 @@ package mokee.providers {
     field public static final java.lang.String AUTHORITY = "mksettings";
   }
 
-  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
-    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
-  }
-
   public static final class MKSettings.Global extends android.provider.Settings.NameValueTable {
     ctor public MKSettings.Global();
     method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
@@ -753,6 +761,10 @@ package mokee.providers {
     method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
     field public static final android.net.Uri CONTENT_URI;
     field public static final java.lang.String SYS_PROP_MK_SETTING_VERSION = "sys.mk_settings_global_version";
+  }
+
+  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
+    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
   }
 
   public static final class MKSettings.Secure extends android.provider.Settings.NameValueTable {
@@ -815,6 +827,7 @@ package mokee.providers {
     field public static final java.lang.String ENABLE_PEOPLE_LOOKUP = "enable_people_lookup";
     field public static final java.lang.String ENABLE_REVERSE_LOOKUP = "enable_reverse_lookup";
     field public static final java.lang.String FORWARD_LOOKUP_PROVIDER = "forward_lookup_provider";
+    field public static final java.lang.String HEADSET_CONNECT_PLAYER = "headset_connect_player";
     field public static final java.lang.String HIGH_TOUCH_SENSITIVITY_ENABLE = "high_touch_sensitivity_enable";
     field public static final java.lang.String HOME_WAKE_SCREEN = "home_wake_screen";
     field public static final java.lang.String INCREASING_RING = "increasing_ring";
@@ -867,11 +880,244 @@ package mokee.providers {
     field public static final java.lang.String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
     field public static final java.lang.String SYS_PROP_MK_SETTING_VERSION = "sys.mk_settings_system_version";
     field public static final java.lang.String T9_SEARCH_INPUT_LOCALE = "t9_search_input_locale";
+    field public static final java.lang.String TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK = "touchscreen_gesture_haptic_feedback";
     field public static final java.lang.String USE_EDGE_SERVICE_FOR_GESTURES = "edge_service_for_gestures";
     field public static final java.lang.String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
     field public static final java.lang.String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
     field public static final java.lang.String VOLUME_KEYS_CONTROL_RING_STREAM = "volume_keys_control_ring_stream";
     field public static final java.lang.String VOLUME_WAKE_SCREEN = "volume_wake_screen";
+    field public static final java.lang.String ZEN_ALLOW_LIGHTS = "allow_lights";
+    field public static final java.lang.String ZEN_PRIORITY_ALLOW_LIGHTS = "zen_priority_allow_lights";
+  }
+
+  public class ThemesContract {
+    ctor public ThemesContract();
+    field public static final java.lang.String AUTHORITY = "com.mokee.themes";
+    field public static final android.net.Uri AUTHORITY_URI;
+  }
+
+  public static class ThemesContract.MixnMatchColumns {
+    ctor public ThemesContract.MixnMatchColumns();
+    method public static java.lang.String componentToImageColName(java.lang.String);
+    method public static java.lang.String componentToMixNMatchKey(java.lang.String);
+    method public static java.lang.String mixNMatchKeyToComponent(java.lang.String);
+    field public static final java.lang.String COL_COMPONENT_ID = "component_id";
+    field public static final java.lang.String COL_KEY = "key";
+    field public static final java.lang.String COL_PREV_VALUE = "previous_value";
+    field public static final java.lang.String COL_UPDATE_TIME = "update_time";
+    field public static final java.lang.String COL_VALUE = "value";
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final java.lang.String KEY_ALARM = "mixnmatch_alarm";
+    field public static final java.lang.String KEY_BOOT_ANIM = "mixnmatch_boot_anim";
+    field public static final java.lang.String KEY_FONT = "mixnmatch_font";
+    field public static final java.lang.String KEY_HOMESCREEN = "mixnmatch_homescreen";
+    field public static final java.lang.String KEY_ICONS = "mixnmatch_icons";
+    field public static final java.lang.String KEY_LIVE_LOCK_SCREEN = "mixnmatch_live_lock_screen";
+    field public static final java.lang.String KEY_LOCKSCREEN = "mixnmatch_lockscreen";
+    field public static final java.lang.String KEY_NAVIGATION_BAR = "mixnmatch_navigation_bar";
+    field public static final java.lang.String KEY_NOTIFICATIONS = "mixnmatch_notifications";
+    field public static final java.lang.String KEY_OVERLAYS = "mixnmatch_overlays";
+    field public static final java.lang.String KEY_RINGTONE = "mixnmatch_ringtone";
+    field public static final java.lang.String KEY_STATUS_BAR = "mixnmatch_status_bar";
+    field public static final java.lang.String[] ROWS;
+  }
+
+  public static class ThemesContract.PreviewColumns {
+    ctor public ThemesContract.PreviewColumns();
+    field public static final android.net.Uri APPLIED_URI;
+    field public static final java.lang.String BOOTANIMATION_THUMBNAIL = "bootanimation_thumbnail";
+    field public static final java.lang.String COL_KEY = "key";
+    field public static final java.lang.String COL_VALUE = "value";
+    field public static final android.net.Uri COMPONENTS_URI;
+    field public static final java.lang.String COMPONENT_ID = "component_id";
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final java.lang.String ICON_PREVIEW_1 = "icon_preview_1";
+    field public static final java.lang.String ICON_PREVIEW_2 = "icon_preview_2";
+    field public static final java.lang.String ICON_PREVIEW_3 = "icon_preview_3";
+    field public static final java.lang.String LIVE_LOCK_SCREEN_PREVIEW = "live_lock_screen_preview";
+    field public static final java.lang.String LIVE_LOCK_SCREEN_THUMBNAIL = "live_lock_screen_thumbnail";
+    field public static final java.lang.String LOCK_WALLPAPER_PREVIEW = "lock_wallpaper_preview";
+    field public static final java.lang.String LOCK_WALLPAPER_THUMBNAIL = "lock_wallpaper_thumbnail";
+    field public static final java.lang.String NAVBAR_BACKGROUND = "navbar_background";
+    field public static final java.lang.String NAVBAR_BACK_BUTTON = "navbar_back_button";
+    field public static final java.lang.String NAVBAR_HOME_BUTTON = "navbar_home_button";
+    field public static final java.lang.String NAVBAR_RECENT_BUTTON = "navbar_recent_button";
+    field public static final java.lang.String STATUSBAR_BACKGROUND = "statusbar_background";
+    field public static final java.lang.String STATUSBAR_BATTERY_CIRCLE = "statusbar_battery_circle";
+    field public static final java.lang.String STATUSBAR_BATTERY_LANDSCAPE = "statusbar_battery_landscape";
+    field public static final java.lang.String STATUSBAR_BATTERY_PORTRAIT = "statusbar_battery_portrait";
+    field public static final java.lang.String STATUSBAR_BLUETOOTH_ICON = "statusbar_bluetooth_icon";
+    field public static final java.lang.String STATUSBAR_CLOCK_TEXT_COLOR = "statusbar_clock_text_color";
+    field public static final java.lang.String STATUSBAR_SIGNAL_ICON = "statusbar_signal_icon";
+    field public static final java.lang.String STATUSBAR_WIFI_COMBO_MARGIN_END = "wifi_combo_margin_end";
+    field public static final java.lang.String STATUSBAR_WIFI_ICON = "statusbar_wifi_icon";
+    field public static final java.lang.String STYLE_PREVIEW = "style_preview";
+    field public static final java.lang.String STYLE_THUMBNAIL = "style_thumbnail";
+    field public static final java.lang.String THEME_ID = "theme_id";
+    field public static final java.lang.String[] VALID_KEYS;
+    field public static final java.lang.String WALLPAPER_FULL = "wallpaper_full";
+    field public static final java.lang.String WALLPAPER_PREVIEW = "wallpaper_preview";
+    field public static final java.lang.String WALLPAPER_THUMBNAIL = "wallpaper_thumbnail";
+    field public static final java.lang.String _ID = "_id";
+  }
+
+  public static class ThemesContract.ThemesColumns {
+    ctor public ThemesContract.ThemesColumns();
+    field public static final java.lang.String AUTHOR = "author";
+    field public static final java.lang.String BOOT_ANIM_URI = "bootanim_uri";
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final java.lang.String DATE_CREATED = "created";
+    field public static final java.lang.String FONT_URI = "font_uri";
+    field public static final java.lang.String HOMESCREEN_URI = "homescreen_uri";
+    field public static final java.lang.String ICON_URI = "icon_uri";
+    field public static final java.lang.String INSTALL_STATE = "install_state";
+    field public static final java.lang.String INSTALL_TIME = "install_time";
+    field public static final java.lang.String IS_DEFAULT_THEME = "is_default_theme";
+    field public static final java.lang.String IS_LEGACY_ICONPACK = "is_legacy_iconpack";
+    field public static final java.lang.String IS_LEGACY_THEME = "is_legacy_theme";
+    field public static final java.lang.String LAST_UPDATE_TIME = "updateTime";
+    field public static final java.lang.String LOCKSCREEN_URI = "lockscreen_uri";
+    field public static final java.lang.String MODIFIES_ALARMS = "mods_alarms";
+    field public static final java.lang.String MODIFIES_BOOT_ANIM = "mods_bootanim";
+    field public static final java.lang.String MODIFIES_FONTS = "mods_fonts";
+    field public static final java.lang.String MODIFIES_ICONS = "mods_icons";
+    field public static final java.lang.String MODIFIES_LAUNCHER = "mods_homescreen";
+    field public static final java.lang.String MODIFIES_LIVE_LOCK_SCREEN = "mods_live_lock_screen";
+    field public static final java.lang.String MODIFIES_LOCKSCREEN = "mods_lockscreen";
+    field public static final java.lang.String MODIFIES_NAVIGATION_BAR = "mods_navigation_bar";
+    field public static final java.lang.String MODIFIES_NOTIFICATIONS = "mods_notifications";
+    field public static final java.lang.String MODIFIES_OVERLAYS = "mods_overlays";
+    field public static final java.lang.String MODIFIES_RINGTONES = "mods_ringtones";
+    field public static final java.lang.String MODIFIES_STATUS_BAR = "mods_status_bar";
+    field public static final java.lang.String OVERLAYS_URI = "overlays_uri";
+    field public static final java.lang.String PKG_NAME = "pkg_name";
+    field public static final java.lang.String PRESENT_AS_THEME = "present_as_theme";
+    field public static final java.lang.String PRIMARY_COLOR = "primary_color";
+    field public static final java.lang.String SECONDARY_COLOR = "secondary_color";
+    field public static final java.lang.String STATUSBAR_URI = "status_uri";
+    field public static final java.lang.String STYLE_URI = "style_uri";
+    field public static final java.lang.String TARGET_API = "target_api";
+    field public static final java.lang.String TITLE = "title";
+    field public static final java.lang.String WALLPAPER_URI = "wallpaper_uri";
+    field public static final java.lang.String _ID = "_id";
+  }
+
+  public static class ThemesContract.ThemesColumns.InstallState {
+    ctor public ThemesContract.ThemesColumns.InstallState();
+    field public static final int INSTALLED = 3; // 0x3
+    field public static final int INSTALLING = 1; // 0x1
+    field public static final int UNKNOWN = 0; // 0x0
+    field public static final int UPDATING = 2; // 0x2
+  }
+
+}
+
+package mokee.themes {
+
+  public final class ThemeChangeRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method public java.lang.String getAlarmThemePackageName();
+    method public java.lang.String getBootanimationThemePackageName();
+    method public java.lang.String getFontThemePackageName();
+    method public java.lang.String getIconsThemePackageName();
+    method public java.lang.String getLiveLockScreenThemePackageName();
+    method public java.lang.String getLockWallpaperThemePackageName();
+    method public java.lang.String getNavBarThemePackageName();
+    method public java.lang.String getNotificationThemePackageName();
+    method public int getNumChangesRequested();
+    method public java.lang.String getOverlayThemePackageName();
+    method public final java.util.Map<java.lang.String, java.lang.String> getPerAppOverlays();
+    method public mokee.themes.ThemeChangeRequest.RequestType getReqeustType();
+    method public java.lang.String getRingtoneThemePackageName();
+    method public java.lang.String getStatusBarThemePackageName();
+    method public final java.util.Map<java.lang.String, java.lang.String> getThemeComponentsMap();
+    method public long getWallpaperId();
+    method public java.lang.String getWallpaperThemePackageName();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.themes.ThemeChangeRequest> CREATOR;
+    field public static final int DEFAULT_WALLPAPER_ID = -1; // 0xffffffff
+  }
+
+  public static class ThemeChangeRequest.Builder {
+    ctor public ThemeChangeRequest.Builder();
+    ctor public ThemeChangeRequest.Builder(android.content.res.ThemeConfig);
+    method public mokee.themes.ThemeChangeRequest build();
+    method public mokee.themes.ThemeChangeRequest.Builder setAlarm(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setAppOverlay(java.lang.String, java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setBootanimation(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setComponent(java.lang.String, java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setFont(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setIcons(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setLiveLockScreen(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setLockWallpaper(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setNavBar(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setNotification(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setOverlay(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setRequestType(mokee.themes.ThemeChangeRequest.RequestType);
+    method public mokee.themes.ThemeChangeRequest.Builder setRingtone(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setStatusBar(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setWallpaper(java.lang.String);
+    method public mokee.themes.ThemeChangeRequest.Builder setWallpaperId(long);
+  }
+
+  public static final class ThemeChangeRequest.RequestType extends java.lang.Enum {
+    method public static mokee.themes.ThemeChangeRequest.RequestType valueOf(java.lang.String);
+    method public static final mokee.themes.ThemeChangeRequest.RequestType[] values();
+    enum_constant public static final mokee.themes.ThemeChangeRequest.RequestType THEME_REMOVED;
+    enum_constant public static final mokee.themes.ThemeChangeRequest.RequestType THEME_RESET;
+    enum_constant public static final mokee.themes.ThemeChangeRequest.RequestType THEME_UPDATED;
+    enum_constant public static final mokee.themes.ThemeChangeRequest.RequestType USER_REQUEST;
+    enum_constant public static final mokee.themes.ThemeChangeRequest.RequestType USER_REQUEST_MIXNMATCH;
+  }
+
+  public class ThemeManager {
+    method public deprecated void addClient(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public void applyDefaultTheme();
+    method public static mokee.themes.ThemeManager getInstance();
+    method public mokee.themes.ThemeChangeRequest.RequestType getLastThemeChangeRequestType();
+    method public long getLastThemeChangeTime();
+    method public int getProgress();
+    method public boolean isThemeApplying();
+    method public boolean isThemeBeingProcessed(java.lang.String);
+    method public deprecated void onClientDestroyed(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public deprecated void onClientPaused(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public deprecated void onClientResumed(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public boolean processThemeResources(java.lang.String);
+    method public void registerProcessingListener(mokee.themes.ThemeManager.ThemeProcessingListener);
+    method public void registerThemeChangeListener(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public deprecated void removeClient(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public void requestThemeChange(java.lang.String, java.util.List<java.lang.String>);
+    method public void requestThemeChange(java.lang.String, java.util.List<java.lang.String>, boolean);
+    method public void requestThemeChange(java.util.Map<java.lang.String, java.lang.String>);
+    method public void requestThemeChange(java.util.Map<java.lang.String, java.lang.String>, boolean);
+    method public void requestThemeChange(mokee.themes.ThemeChangeRequest, boolean);
+    method public void unregisterProcessingListener(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public void unregisterThemeChangeListener(mokee.themes.ThemeManager.ThemeChangeListener);
+  }
+
+  public static abstract interface ThemeManager.ThemeChangeListener {
+    method public abstract void onFinish(boolean);
+    method public abstract void onProgress(int);
+  }
+
+  public static abstract interface ThemeManager.ThemeProcessingListener {
+    method public abstract void onFinishedProcessing(java.lang.String);
+  }
+
+}
+
+package mokee.util {
+
+  public class ColorUtils {
+    ctor public ColorUtils();
+    method public static double calculateDeltaE(double, double, double, double, double, double);
+    method public static float[] convertRGBtoLAB(int);
+    method public static int dropAlpha(int);
+    method public static int findPerceptuallyNearestColor(int, int[]);
+    method public static int findPerceptuallyNearestSolidColor(int);
+    method public static int generateAlertColorFromDrawable(android.graphics.drawable.Drawable);
+    method public static com.android.internal.util.cm.palette.Palette.Swatch getDominantSwatch(com.android.internal.util.cm.palette.Palette);
+    method public static float[] temperatureToRGB(int);
   }
 
 }
