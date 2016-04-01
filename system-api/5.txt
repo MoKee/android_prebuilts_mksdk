@@ -67,6 +67,29 @@ package mokee.alarmclock {
 
 package mokee.app {
 
+  public class MKStatusBarManager {
+    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
+    method public void publishTile(int, mokee.app.CustomTile);
+    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
+    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
+    method public void removeTile(int);
+    method public void removeTile(java.lang.String, int);
+    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
+  }
+
+  public class MKTelephonyManager {
+    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
+    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
+    method public boolean isDataConnectionEnabled();
+    method public boolean isDataConnectionSelectedOnSub(int);
+    method public boolean isSubActive(int);
+    method public void setDataConnectionState(boolean);
+    method public void setDefaultPhoneSub(int);
+    method public void setDefaultSmsSub(int);
+    method public void setSubState(int, boolean);
+    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
+  }
+
   public class CustomTile implements android.os.Parcelable {
     ctor public CustomTile(android.os.Parcel);
     ctor public CustomTile();
@@ -174,27 +197,36 @@ package mokee.app {
     field public static final java.lang.String SERVICE_INTERFACE = "mokee.app.CustomTileListenerService";
   }
 
-  public class MKStatusBarManager {
-    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
-    method public void publishTile(int, mokee.app.CustomTile);
-    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
-    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
-    method public void removeTile(int);
-    method public void removeTile(java.lang.String, int);
-    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
+  public class LiveLockScreenInfo implements android.os.Parcelable {
+    ctor public LiveLockScreenInfo(android.content.ComponentName, int);
+    ctor public LiveLockScreenInfo();
+    method public mokee.app.LiveLockScreenInfo clone();
+    method public int describeContents();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.app.LiveLockScreenInfo> CREATOR;
+    field public static final int PRIORITY_DEFAULT = 0; // 0x0
+    field public static final int PRIORITY_HIGH = 1; // 0x1
+    field public static final int PRIORITY_LOW = -1; // 0xffffffff
+    field public static final int PRIORITY_MAX = 2; // 0x2
+    field public static final int PRIORITY_MIN = -2; // 0xfffffffe
+    field public android.content.ComponentName component;
+    field public int priority;
   }
 
-  public class MKTelephonyManager {
-    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
-    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
-    method public boolean isDataConnectionEnabled();
-    method public boolean isDataConnectionSelectedOnSub(int);
-    method public boolean isSubActive(int);
-    method public void setDataConnectionState(boolean);
-    method public void setDefaultPhoneSub(int);
-    method public void setDefaultSmsSub(int);
-    method public void setSubState(int, boolean);
-    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
+  public static class LiveLockScreenInfo.Builder {
+    ctor public LiveLockScreenInfo.Builder();
+    method public mokee.app.LiveLockScreenInfo build();
+    method public mokee.app.LiveLockScreenInfo.Builder setComponent(android.content.ComponentName);
+    method public mokee.app.LiveLockScreenInfo.Builder setPriority(int);
+  }
+
+  public class LiveLockScreenManager {
+    method public void cancel(int);
+    method public mokee.app.LiveLockScreenInfo getDefaultLiveLockScreen();
+    method public static mokee.app.LiveLockScreenManager getInstance(android.content.Context);
+    method public void setDefaultLiveLockScreen(mokee.app.LiveLockScreenInfo);
+    method public boolean show(int, mokee.app.LiveLockScreenInfo);
+    field public static final java.lang.String SERVICE_INTERFACE = "mokee.app.LiveLockScreenManagerService";
   }
 
   public class PartnerInterface {
@@ -415,25 +447,6 @@ package mokee.externalviews {
 
 package mokee.hardware {
 
-  public class DisplayMode implements android.os.Parcelable {
-    ctor public DisplayMode(int, java.lang.String);
-    method public int describeContents();
-    method public void writeToParcel(android.os.Parcel, int);
-    field public final int id;
-    field public final java.lang.String name;
-  }
-
-  public abstract interface IThermalListenerCallback implements android.os.IInterface {
-    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
-  }
-
-  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
-    ctor public IThermalListenerCallback.Stub();
-    method public android.os.IBinder asBinder();
-    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
-    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
-  }
-
   public final class MKHardwareManager {
     method public boolean deletePersistentObject(java.lang.String);
     method public boolean get(int);
@@ -494,6 +507,25 @@ package mokee.hardware {
     field public static final int FEATURE_TOUCH_HOVERING = 2048; // 0x800
     field public static final int FEATURE_UNIQUE_DEVICE_ID = 65536; // 0x10000
     field public static final int FEATURE_VIBRATOR = 1024; // 0x400
+  }
+
+  public class DisplayMode implements android.os.Parcelable {
+    ctor public DisplayMode(int, java.lang.String);
+    method public int describeContents();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public final int id;
+    field public final java.lang.String name;
+  }
+
+  public abstract interface IThermalListenerCallback implements android.os.IInterface {
+    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
+  }
+
+  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
+    ctor public IThermalListenerCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
   }
 
   public abstract class ThermalListenerCallback extends mokee.hardware.IThermalListenerCallback.Stub {
@@ -560,8 +592,13 @@ package mokee.platform {
 
   public static final class Manifest.permission {
     ctor public Manifest.permission();
+    field public static final java.lang.String READ_PHONE_LOCATION = "mokee.permission.READ_PHONE_LOCATION";
+    field public static final java.lang.String WRITE_PHONE_LOCATION = "mokee.permission.WRITE_PHONE_LOCATION";
     field public static final java.lang.String ACCESS_THEME_MANAGER = "mokee.permission.ACCESS_THEME_MANAGER";
+    field public static final java.lang.String ACCESS_WEATHER_MANAGER = "mokee.permission.ACCESS_WEATHER_MANAGER";
+    field public static final java.lang.String BIND_WEATHER_PROVIDER_SERVICE = "mokee.permission.BIND_WEATHER_PROVIDER_SERVICE";
     field public static final java.lang.String HARDWARE_ABSTRACTION_ACCESS = "mokee.permission.HARDWARE_ABSTRACTION_ACCESS";
+    field public static final java.lang.String LIVE_LOCK_SCREEN_MANAGER_ACCESS = "mokee.permission.LIVE_LOCK_SCREEN_MANAGER_ACCESS";
     field public static final java.lang.String MANAGE_ALARMS = "mokee.permission.MANAGE_ALARMS";
     field public static final java.lang.String MANAGE_PERSISTENT_STORAGE = "mokee.permission.MANAGE_PERSISTENT_STORAGE";
     field public static final java.lang.String MODIFY_MSIM_PHONE_STATE = "mokee.permission.MODIFY_MSIM_PHONE_STATE";
@@ -573,14 +610,14 @@ package mokee.platform {
     field public static final java.lang.String PUBLISH_CUSTOM_TILE = "mokee.permission.PUBLISH_CUSTOM_TILE";
     field public static final java.lang.String READ_ALARMS = "mokee.permission.READ_ALARMS";
     field public static final java.lang.String READ_MSIM_PHONE_STATE = "mokee.permission.READ_MSIM_PHONE_STATE";
-    field public static final java.lang.String READ_PHONE_LOCATION = "mokee.permission.READ_PHONE_LOCATION";
     field public static final java.lang.String READ_THEMES = "mokee.permission.READ_THEMES";
+    field public static final java.lang.String READ_WEATHER = "mokee.permission.READ_WEATHER";
     field public static final java.lang.String THIRD_PARTY_KEYGUARD = "android.permission.THIRD_PARTY_KEYGUARD";
     field public static final java.lang.String WRITE_ALARMS = "mokee.permission.WRITE_ALARMS";
-    field public static final java.lang.String WRITE_PHONE_LOCATION = "mokee.permission.WRITE_PHONE_LOCATION";
     field public static final java.lang.String WRITE_SECURE_SETTINGS = "mokee.permission.WRITE_SECURE_SETTINGS";
     field public static final java.lang.String WRITE_SETTINGS = "mokee.permission.WRITE_SETTINGS";
     field public static final java.lang.String WRITE_THEMES = "mokee.permission.WRITE_THEMES";
+    field public static final java.lang.String WRITE_WEATHER = "mokee.permission.WRITE_WEATHER";
   }
 
   public final class R {
@@ -745,6 +782,10 @@ package mokee.providers {
     field public static final java.lang.String AUTHORITY = "mksettings";
   }
 
+  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
+    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
+  }
+
   public static final class MKSettings.Global extends android.provider.Settings.NameValueTable {
     ctor public MKSettings.Global();
     method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
@@ -761,10 +802,6 @@ package mokee.providers {
     method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
     field public static final android.net.Uri CONTENT_URI;
     field public static final java.lang.String SYS_PROP_MK_SETTING_VERSION = "sys.mk_settings_global_version";
-  }
-
-  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
-    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
   }
 
   public static final class MKSettings.Secure extends android.provider.Settings.NameValueTable {
@@ -1010,6 +1047,94 @@ package mokee.providers {
     field public static final int UPDATING = 2; // 0x2
   }
 
+  public class WeatherContract {
+    ctor public WeatherContract();
+    field public static final java.lang.String AUTHORITY = "com.mokee.weather";
+    field public static final android.net.Uri AUTHORITY_URI;
+  }
+
+  public static class WeatherContract.WeatherColumns {
+    ctor public WeatherContract.WeatherColumns();
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final android.net.Uri CURRENT_AND_FORECAST_WEATHER_URI;
+    field public static final java.lang.String CURRENT_CITY = "city";
+    field public static final java.lang.String CURRENT_CITY_ID = "city_id";
+    field public static final java.lang.String CURRENT_CONDITION = "condition";
+    field public static final java.lang.String CURRENT_CONDITION_CODE = "condition_code";
+    field public static final java.lang.String CURRENT_HUMIDITY = "humidity";
+    field public static final java.lang.String CURRENT_TEMPERATURE = "temperature";
+    field public static final java.lang.String CURRENT_TEMPERATURE_UNIT = "temperature_unit";
+    field public static final java.lang.String CURRENT_TIMESTAMP = "timestamp";
+    field public static final android.net.Uri CURRENT_WEATHER_URI;
+    field public static final java.lang.String CURRENT_WIND_DIRECTION = "wind_direction";
+    field public static final java.lang.String CURRENT_WIND_SPEED = "wind_speed";
+    field public static final java.lang.String CURRENT_WIND_SPEED_UNIT = "wind_speed_unit";
+    field public static final java.lang.String FORECAST_CONDITION = "forecast_condition";
+    field public static final java.lang.String FORECAST_CONDITION_CODE = "forecast_condition_code";
+    field public static final java.lang.String FORECAST_HIGH = "forecast_high";
+    field public static final java.lang.String FORECAST_LOW = "forecast_low";
+    field public static final android.net.Uri FORECAST_WEATHER_URI;
+  }
+
+  public static final class WeatherContract.WeatherColumns.TempUnit {
+    field public static final int CELSIUS = 1; // 0x1
+    field public static final int FAHRENHEIT = 2; // 0x2
+  }
+
+  public static final class WeatherContract.WeatherColumns.WeatherCode {
+    field public static final int BLOWING_SNOW = 14; // 0xe
+    field public static final int BLUSTERY = 22; // 0x16
+    field public static final int CLEAR_NIGHT = 30; // 0x1e
+    field public static final int CLOUDY = 25; // 0x19
+    field public static final int COLD = 24; // 0x18
+    field public static final int DRIZZLE = 9; // 0x9
+    field public static final int DUST = 18; // 0x12
+    field public static final int FAIR_DAY = 33; // 0x21
+    field public static final int FAIR_NIGHT = 32; // 0x20
+    field public static final int FOGGY = 19; // 0x13
+    field public static final int FREEZING_DRIZZLE = 8; // 0x8
+    field public static final int FREEZING_RAIN = 10; // 0xa
+    field public static final int HAIL = 16; // 0x10
+    field public static final int HAZE = 20; // 0x14
+    field public static final int HEAVY_SNOW = 39; // 0x27
+    field public static final int HOT = 35; // 0x23
+    field public static final int HURRICANE = 2; // 0x2
+    field public static final int ISOLATED_THUNDERSHOWERS = 44; // 0x2c
+    field public static final int ISOLATED_THUNDERSTORMS = 36; // 0x24
+    field public static final int LIGHT_SNOW_SHOWERS = 13; // 0xd
+    field public static final int MIXED_RAIN_AND_HAIL = 34; // 0x22
+    field public static final int MIXED_RAIN_AND_SLEET = 6; // 0x6
+    field public static final int MIXED_RAIN_AND_SNOW = 5; // 0x5
+    field public static final int MIXED_SNOW_AND_SLEET = 7; // 0x7
+    field public static final int MOSTLY_CLOUDY_DAY = 27; // 0x1b
+    field public static final int MOSTLY_CLOUDY_NIGHT = 26; // 0x1a
+    field public static final int NOT_AVAILABLE = 3200; // 0xc80
+    field public static final int PARTLY_CLOUDY = 41; // 0x29
+    field public static final int PARTLY_CLOUDY_DAY = 29; // 0x1d
+    field public static final int PARTLY_CLOUDY_NIGHT = 28; // 0x1c
+    field public static final int SCATTERED_SHOWERS = 38; // 0x26
+    field public static final int SCATTERED_SNOW_SHOWERS = 40; // 0x28
+    field public static final int SCATTERED_THUNDERSTORMS = 37; // 0x25
+    field public static final int SEVERE_THUNDERSTORMS = 3; // 0x3
+    field public static final int SHOWERS = 11; // 0xb
+    field public static final int SLEET = 17; // 0x11
+    field public static final int SMOKY = 21; // 0x15
+    field public static final int SNOW = 15; // 0xf
+    field public static final int SNOW_FLURRIES = 12; // 0xc
+    field public static final int SNOW_SHOWERS = 43; // 0x2b
+    field public static final int SUNNY = 31; // 0x1f
+    field public static final int THUNDERSHOWER = 42; // 0x2a
+    field public static final int THUNDERSTORMS = 4; // 0x4
+    field public static final int TORNADO = 0; // 0x0
+    field public static final int TROPICAL_STORM = 1; // 0x1
+    field public static final int WINDY = 23; // 0x17
+  }
+
+  public static final class WeatherContract.WeatherColumns.WindSpeedUnit {
+    field public static final int KPH = 1; // 0x1
+    field public static final int MPH = 2; // 0x2
+  }
+
 }
 
 package mokee.themes {
@@ -1091,7 +1216,7 @@ package mokee.themes {
     method public void requestThemeChange(java.util.Map<java.lang.String, java.lang.String>);
     method public void requestThemeChange(java.util.Map<java.lang.String, java.lang.String>, boolean);
     method public void requestThemeChange(mokee.themes.ThemeChangeRequest, boolean);
-    method public void unregisterProcessingListener(mokee.themes.ThemeManager.ThemeChangeListener);
+    method public void unregisterProcessingListener(mokee.themes.ThemeManager.ThemeProcessingListener);
     method public void unregisterThemeChangeListener(mokee.themes.ThemeManager.ThemeChangeListener);
   }
 
@@ -1118,6 +1243,150 @@ package mokee.util {
     method public static int generateAlertColorFromDrawable(android.graphics.drawable.Drawable);
     method public static com.android.internal.util.cm.palette.Palette.Swatch getDominantSwatch(com.android.internal.util.cm.palette.Palette);
     method public static float[] temperatureToRGB(int);
+  }
+
+}
+
+package mokee.weather {
+
+  public class MKWeatherManager {
+    method public java.lang.String getActiveWeatherServiceProviderLabel();
+    method public static mokee.weather.MKWeatherManager getInstance(android.content.Context);
+    method public void lookupCity(java.lang.String, mokee.weather.MKWeatherManager.LookupCityRequestListener);
+    method public void registerWeatherServiceProviderChangeListener(mokee.weather.MKWeatherManager.WeatherServiceProviderChangeListener);
+    method public void requestWeatherUpdate(android.location.Location, mokee.weather.MKWeatherManager.WeatherUpdateRequestListener);
+    method public void requestWeatherUpdate(mokee.weather.WeatherLocation, mokee.weather.MKWeatherManager.WeatherUpdateRequestListener);
+    method public void unregisterWeatherServiceProviderChangeListener(mokee.weather.MKWeatherManager.WeatherServiceProviderChangeListener);
+    field public static final int WEATHER_REQUEST_ALREADY_IN_PROGRESS = -3; // 0xfffffffd
+    field public static final int WEATHER_REQUEST_COMPLETED = 1; // 0x1
+    field public static final int WEATHER_REQUEST_FAILED = -2; // 0xfffffffe
+    field public static final int WEATHER_REQUEST_SUBMITTED_TOO_SOON = -1; // 0xffffffff
+  }
+
+  public static abstract interface MKWeatherManager.LookupCityRequestListener {
+    method public abstract void onLookupCityRequestCompleted(java.util.ArrayList<mokee.weather.WeatherLocation>);
+  }
+
+  public static abstract interface MKWeatherManager.WeatherServiceProviderChangeListener {
+    method public abstract void onWeatherServiceProviderChanged(java.lang.String);
+  }
+
+  public static abstract interface MKWeatherManager.WeatherUpdateRequestListener {
+    method public abstract void onWeatherRequestCompleted(int, mokee.weather.WeatherInfo);
+  }
+
+  public final class RequestInfo implements android.os.Parcelable {
+    method public int describeContents();
+    method public java.lang.String getCityName();
+    method public android.location.Location getLocation();
+    method public int getRequestType();
+    method public int getTemperatureUnit();
+    method public mokee.weather.WeatherLocation getWeatherLocation();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.weather.RequestInfo> CREATOR;
+    field public static final int TYPE_GEO_LOCATION_REQ = 1; // 0x1
+    field public static final int TYPE_LOOKUP_CITY_NAME_REQ = 3; // 0x3
+    field public static final int TYPE_WEATHER_LOCATION_REQ = 2; // 0x2
+  }
+
+  public final class WeatherInfo implements android.os.Parcelable {
+    method public int describeContents();
+    method public java.lang.String getCity();
+    method public java.lang.String getCityId();
+    method public int getConditionCode();
+    method public java.util.ArrayList<mokee.weather.WeatherInfo.DayForecast> getForecasts();
+    method public float getHumidity();
+    method public float getTemperature();
+    method public int getTemperatureUnit();
+    method public long getTimestamp();
+    method public float getWindDirection();
+    method public float getWindSpeed();
+    method public int getWindSpeedUnit();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.weather.WeatherInfo> CREATOR;
+  }
+
+  public static class WeatherInfo.Builder {
+    ctor public WeatherInfo.Builder(long);
+    method public mokee.weather.WeatherInfo build();
+    method public mokee.weather.WeatherInfo.Builder setCity(java.lang.String, java.lang.String);
+    method public mokee.weather.WeatherInfo.Builder setForecast(java.util.ArrayList<mokee.weather.WeatherInfo.DayForecast>);
+    method public mokee.weather.WeatherInfo.Builder setHumidity(float);
+    method public mokee.weather.WeatherInfo.Builder setTemperature(float, int);
+    method public mokee.weather.WeatherInfo.Builder setWeatherCondition(int);
+    method public mokee.weather.WeatherInfo.Builder setWind(float, float, int);
+  }
+
+  public static class WeatherInfo.DayForecast implements android.os.Parcelable {
+    method public int describeContents();
+    method public int getConditionCode();
+    method public float getHigh();
+    method public float getLow();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.weather.WeatherInfo.DayForecast> CREATOR;
+  }
+
+  public static class WeatherInfo.DayForecast.Builder {
+    ctor public WeatherInfo.DayForecast.Builder();
+    method public mokee.weather.WeatherInfo.DayForecast build();
+    method public mokee.weather.WeatherInfo.DayForecast.Builder setHigh(float);
+    method public mokee.weather.WeatherInfo.DayForecast.Builder setLow(float);
+    method public mokee.weather.WeatherInfo.DayForecast.Builder setWeatherCondition(int);
+  }
+
+  public final class WeatherLocation implements android.os.Parcelable {
+    method public int describeContents();
+    method public java.lang.String getCity();
+    method public java.lang.String getCityId();
+    method public java.lang.String getCountry();
+    method public java.lang.String getCountryId();
+    method public java.lang.String getPostalCode();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.weather.WeatherLocation> CREATOR;
+  }
+
+  public static class WeatherLocation.Builder {
+    ctor public WeatherLocation.Builder(java.lang.String, java.lang.String);
+    method public mokee.weather.WeatherLocation build();
+    method public mokee.weather.WeatherLocation.Builder setCountry(java.lang.String, java.lang.String);
+    method public mokee.weather.WeatherLocation.Builder setPostalCode(java.lang.String);
+  }
+
+}
+
+package mokee.weatherservice {
+
+  public final class ServiceRequest {
+    method public void complete(mokee.weatherservice.ServiceRequestResult);
+    method public void fail();
+    method public mokee.weather.RequestInfo getRequestInfo();
+  }
+
+  public final class ServiceRequestResult implements android.os.Parcelable {
+    method public int describeContents();
+    method public java.util.ArrayList<mokee.weather.WeatherLocation> getLocationLookupList();
+    method public mokee.weather.WeatherInfo getWeatherInfo();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator<mokee.weatherservice.ServiceRequestResult> CREATOR;
+  }
+
+  public static class ServiceRequestResult.Builder {
+    ctor public ServiceRequestResult.Builder();
+    method public mokee.weatherservice.ServiceRequestResult build();
+    method public mokee.weatherservice.ServiceRequestResult.Builder setLocationLookupList(java.util.ArrayList<mokee.weather.WeatherLocation>);
+    method public mokee.weatherservice.ServiceRequestResult.Builder setWeatherInfo(mokee.weather.WeatherInfo);
+  }
+
+  public abstract class WeatherProviderService extends android.app.Service {
+    ctor public WeatherProviderService();
+    method protected final void attachBaseContext(android.content.Context);
+    method public final android.os.IBinder onBind(android.content.Intent);
+    method protected void onConnected();
+    method protected void onDisconnected();
+    method protected abstract void onRequestCancelled(mokee.weatherservice.ServiceRequest);
+    method protected abstract void onRequestSubmitted(mokee.weatherservice.ServiceRequest);
+    field public static final java.lang.String SERVICE_INTERFACE = "mokee.weatherservice.WeatherProviderService";
+    field public static final java.lang.String SERVICE_META_DATA = "mokee.weatherservice";
   }
 
 }
