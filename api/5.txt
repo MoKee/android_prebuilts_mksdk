@@ -67,6 +67,29 @@ package mokee.alarmclock {
 
 package mokee.app {
 
+  public class MKStatusBarManager {
+    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
+    method public void publishTile(int, mokee.app.CustomTile);
+    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
+    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
+    method public void removeTile(int);
+    method public void removeTile(java.lang.String, int);
+    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
+  }
+
+  public class MKTelephonyManager {
+    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
+    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
+    method public boolean isDataConnectionEnabled();
+    method public boolean isDataConnectionSelectedOnSub(int);
+    method public boolean isSubActive(int);
+    method public void setDataConnectionState(boolean);
+    method public void setDefaultPhoneSub(int);
+    method public void setDefaultSmsSub(int);
+    method public void setSubState(int, boolean);
+    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
+  }
+
   public class CustomTile implements android.os.Parcelable {
     ctor public CustomTile(android.os.Parcel);
     ctor public CustomTile();
@@ -204,29 +227,6 @@ package mokee.app {
     method public void setDefaultLiveLockScreen(mokee.app.LiveLockScreenInfo);
     method public boolean show(int, mokee.app.LiveLockScreenInfo);
     field public static final java.lang.String SERVICE_INTERFACE = "mokee.app.LiveLockScreenManagerService";
-  }
-
-  public class MKStatusBarManager {
-    method public static mokee.app.MKStatusBarManager getInstance(android.content.Context);
-    method public void publishTile(int, mokee.app.CustomTile);
-    method public void publishTile(java.lang.String, int, mokee.app.CustomTile);
-    method public void publishTileAsUser(java.lang.String, int, mokee.app.CustomTile, android.os.UserHandle);
-    method public void removeTile(int);
-    method public void removeTile(java.lang.String, int);
-    method public void removeTileAsUser(java.lang.String, int, android.os.UserHandle);
-  }
-
-  public class MKTelephonyManager {
-    method public static mokee.app.MKTelephonyManager getInstance(android.content.Context);
-    method public java.util.List<android.telephony.SubscriptionInfo> getSubInformation();
-    method public boolean isDataConnectionEnabled();
-    method public boolean isDataConnectionSelectedOnSub(int);
-    method public boolean isSubActive(int);
-    method public void setDataConnectionState(boolean);
-    method public void setDefaultPhoneSub(int);
-    method public void setDefaultSmsSub(int);
-    method public void setSubState(int, boolean);
-    field public static final int ASK_FOR_SUBSCRIPTION_ID = 0; // 0x0
   }
 
   public class PartnerInterface {
@@ -449,25 +449,6 @@ package mokee.externalviews {
 
 package mokee.hardware {
 
-  public class DisplayMode implements android.os.Parcelable {
-    ctor public DisplayMode(int, java.lang.String);
-    method public int describeContents();
-    method public void writeToParcel(android.os.Parcel, int);
-    field public final int id;
-    field public final java.lang.String name;
-  }
-
-  public abstract interface IThermalListenerCallback implements android.os.IInterface {
-    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
-  }
-
-  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
-    ctor public IThermalListenerCallback.Stub();
-    method public android.os.IBinder asBinder();
-    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
-    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
-  }
-
   public final class MKHardwareManager {
     method public boolean deletePersistentObject(java.lang.String);
     method public boolean get(int);
@@ -528,6 +509,25 @@ package mokee.hardware {
     field public static final int FEATURE_TOUCH_HOVERING = 2048; // 0x800
     field public static final int FEATURE_UNIQUE_DEVICE_ID = 65536; // 0x10000
     field public static final int FEATURE_VIBRATOR = 1024; // 0x400
+  }
+
+  public class DisplayMode implements android.os.Parcelable {
+    ctor public DisplayMode(int, java.lang.String);
+    method public int describeContents();
+    method public void writeToParcel(android.os.Parcel, int);
+    field public final int id;
+    field public final java.lang.String name;
+  }
+
+  public abstract interface IThermalListenerCallback implements android.os.IInterface {
+    method public abstract void onThermalChanged(int) throws android.os.RemoteException;
+  }
+
+  public static abstract class IThermalListenerCallback.Stub extends android.os.Binder implements mokee.hardware.IThermalListenerCallback {
+    ctor public IThermalListenerCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static mokee.hardware.IThermalListenerCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
   }
 
   public abstract class ThermalListenerCallback extends mokee.hardware.IThermalListenerCallback.Stub {
@@ -792,43 +792,14 @@ package mokee.profiles {
 
 package mokee.providers {
 
-  public final class DataUsageContract {
-    ctor public DataUsageContract();
-    field public static final java.lang.String ACTIVE = "active";
-    field public static final android.net.Uri BASE_CONTENT_URI;
-    field public static final java.lang.String BYTES = "bytes";
-    field public static final int COLUMN_OF_ACTIVE = 3; // 0x3
-    field public static final int COLUMN_OF_BYTES = 5; // 0x5
-    field public static final int COLUMN_OF_ENABLE = 2; // 0x2
-    field public static final int COLUMN_OF_EXTRA = 10; // 0xa
-    field public static final int COLUMN_OF_FAST_AVG = 8; // 0x8
-    field public static final int COLUMN_OF_FAST_SAMPLES = 9; // 0x9
-    field public static final int COLUMN_OF_ID = 0; // 0x0
-    field public static final int COLUMN_OF_LABEL = 4; // 0x4
-    field public static final int COLUMN_OF_SLOW_AVG = 6; // 0x6
-    field public static final int COLUMN_OF_SLOW_SAMPLES = 7; // 0x7
-    field public static final int COLUMN_OF_UID = 1; // 0x1
-    field public static final java.lang.String CONTENT_ITEM_TYPE = "vnd.android.cursor.itemdatausage_item";
-    field public static final java.lang.String CONTENT_TYPE = "vnd.android.cursor.dirdatausage_item";
-    field public static final android.net.Uri CONTENT_URI;
-    field public static final java.lang.String DATAUSAGE_AUTHORITY = "org.mokee.providers.datausage";
-    field public static final java.lang.String DATAUSAGE_TABLE = "datausage";
-    field public static final java.lang.String ENABLE = "enable";
-    field public static final java.lang.String EXTRA = "extra";
-    field public static final java.lang.String FAST_AVG = "fast_avg";
-    field public static final java.lang.String FAST_SAMPLES = "fast_samples";
-    field public static final java.lang.String LABEL = "label";
-    field public static final java.lang.String[] PROJECTION_ALL;
-    field public static final java.lang.String SLOW_AVG = "slow_avg";
-    field public static final java.lang.String SLOW_SAMPLES = "slow_samples";
-    field public static final java.lang.String UID = "uid";
-    field public static final java.lang.String _ID = "_id";
-  }
-
   public final class MKSettings {
     ctor public MKSettings();
     field public static final java.lang.String ACTION_DATA_USAGE = "mokee.settings.ACTION_DATA_USAGE";
     field public static final java.lang.String AUTHORITY = "mksettings";
+  }
+
+  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
+    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
   }
 
   public static final class MKSettings.Global extends android.provider.Settings.NameValueTable {
@@ -847,10 +818,6 @@ package mokee.providers {
     method public static boolean putString(android.content.ContentResolver, java.lang.String, java.lang.String);
     field public static final android.net.Uri CONTENT_URI;
     field public static final java.lang.String SYS_PROP_MK_SETTING_VERSION = "sys.mk_settings_global_version";
-  }
-
-  public static class MKSettings.MKSettingNotFoundException extends android.util.AndroidException {
-    ctor public MKSettings.MKSettingNotFoundException(java.lang.String);
   }
 
   public static final class MKSettings.Secure extends android.provider.Settings.NameValueTable {
@@ -974,6 +941,39 @@ package mokee.providers {
     field public static final java.lang.String VOLUME_WAKE_SCREEN = "volume_wake_screen";
     field public static final java.lang.String ZEN_ALLOW_LIGHTS = "allow_lights";
     field public static final java.lang.String ZEN_PRIORITY_ALLOW_LIGHTS = "zen_priority_allow_lights";
+  }
+
+  public final class DataUsageContract {
+    ctor public DataUsageContract();
+    field public static final java.lang.String ACTIVE = "active";
+    field public static final android.net.Uri BASE_CONTENT_URI;
+    field public static final java.lang.String BYTES = "bytes";
+    field public static final int COLUMN_OF_ACTIVE = 3; // 0x3
+    field public static final int COLUMN_OF_BYTES = 5; // 0x5
+    field public static final int COLUMN_OF_ENABLE = 2; // 0x2
+    field public static final int COLUMN_OF_EXTRA = 10; // 0xa
+    field public static final int COLUMN_OF_FAST_AVG = 8; // 0x8
+    field public static final int COLUMN_OF_FAST_SAMPLES = 9; // 0x9
+    field public static final int COLUMN_OF_ID = 0; // 0x0
+    field public static final int COLUMN_OF_LABEL = 4; // 0x4
+    field public static final int COLUMN_OF_SLOW_AVG = 6; // 0x6
+    field public static final int COLUMN_OF_SLOW_SAMPLES = 7; // 0x7
+    field public static final int COLUMN_OF_UID = 1; // 0x1
+    field public static final java.lang.String CONTENT_ITEM_TYPE = "vnd.android.cursor.itemdatausage_item";
+    field public static final java.lang.String CONTENT_TYPE = "vnd.android.cursor.dirdatausage_item";
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final java.lang.String DATAUSAGE_AUTHORITY = "org.mokee.providers.datausage";
+    field public static final java.lang.String DATAUSAGE_TABLE = "datausage";
+    field public static final java.lang.String ENABLE = "enable";
+    field public static final java.lang.String EXTRA = "extra";
+    field public static final java.lang.String FAST_AVG = "fast_avg";
+    field public static final java.lang.String FAST_SAMPLES = "fast_samples";
+    field public static final java.lang.String LABEL = "label";
+    field public static final java.lang.String[] PROJECTION_ALL;
+    field public static final java.lang.String SLOW_AVG = "slow_avg";
+    field public static final java.lang.String SLOW_SAMPLES = "slow_samples";
+    field public static final java.lang.String UID = "uid";
+    field public static final java.lang.String _ID = "_id";
   }
 
   public class ThemesContract {
