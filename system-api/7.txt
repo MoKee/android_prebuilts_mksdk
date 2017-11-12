@@ -1229,6 +1229,7 @@ package mokee.providers {
     field public static final java.lang.String STATUS_BAR_AM_PM = "status_bar_am_pm";
     field public static final java.lang.String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
     field public static final java.lang.String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
+    field public static final java.lang.String SYSTEMUI_BURNIN_PROTECTION = "systemui_burnin_protection";
     field public static final java.lang.String STATUS_BAR_CLOCK = "status_bar_clock";
     field public static final java.lang.String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
     field public static final java.lang.String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
@@ -1241,6 +1242,7 @@ package mokee.providers {
     field public static final java.lang.String SYS_PROP_MK_SETTING_VERSION = "sys.mk_settings_system_version";
     field public static final java.lang.String T9_SEARCH_INPUT_LOCALE = "t9_search_input_locale";
     field public static final java.lang.String TORCH_LONG_PRESS_POWER_GESTURE = "torch_long_press_power_gesture";
+    field public static final java.lang.String TORCH_LONG_PRESS_POWER_TIMEOUT = "torch_long_press_power_timeout";
     field public static final java.lang.String TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK = "touchscreen_gesture_haptic_feedback";
     field public static final java.lang.String USE_EDGE_SERVICE_FOR_GESTURES = "edge_service_for_gestures";
     field public static final java.lang.String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
